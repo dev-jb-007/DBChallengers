@@ -27,6 +27,7 @@ let selectedAc=new Array;
       })
       const ans=await buffer.json();
       console.log(ans);
+      getLeaderBoard();
  }
  function liveData(){
    var pending=0,inProgress=0,completed=0;
@@ -74,13 +75,16 @@ let selectedAc=new Array;
  getLeaderBoard();
 async function getLeaderBoard(){
   let buffer=await fetch('/user/getLeaderBoard');
-  let div=document.getElementById('leaderboard');
+  let div=document.querySelector('.leaderboard');
   let ans=await buffer.json();
   let leaderboard=ans.set.leaderboard;
   let userid=ans.user;
   console.log(ans);
   let points=ans.point;
   len=leaderboard.length;
+  leaderboard.sort((a,b)=>{
+    return a.point-b.point;
+  });
   let html=`<h1>
   <svg class="ico-cup">
     <use xlink:href="#cup"></use>
@@ -120,6 +124,7 @@ async function getLeaderBoard(){
     </li>`
     html+=`</ol>`
   div.innerHTML=html;
+  document.getElementById('go').style.display='none';
   console.log(leaderboard);
 }
   function displayActivity(ac, x) {
@@ -167,7 +172,7 @@ async function getLeaderBoard(){
     </div>
     <div style="display: flex;justify-content: space-around;flex-direction:column;align-items:center">
     <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
-    <a target="_blank" href="/docter/getVideo/${element._id}"<i class="fas fa-play"></i></a>
+    <a target="_blank" href="/docter/getVideo/${element.activity._id}"<i class="fas fa-play"></i></a>
   </button>
   <p style="margin-top:5px">Points:${element.activity.point}<p/>
     </div>

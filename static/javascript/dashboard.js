@@ -71,7 +71,57 @@ let selectedAc=new Array;
    divtemp.innerHTML = temp;
 
  }
+ getLeaderBoard();
+async function getLeaderBoard(){
+  let buffer=await fetch('/user/getLeaderBoard');
+  let div=document.getElementById('leaderboard');
+  let ans=await buffer.json();
+  let leaderboard=ans.set.leaderboard;
+  let userid=ans.user;
+  console.log(ans);
+  let points=ans.point;
+  len=leaderboard.length;
+  let html=`<h1>
+  <svg class="ico-cup">
+    <use xlink:href="#cup"></use>
+  </svg>
+  Most active Players
+</h1>
+<ol id="leaderboard-ol">`;
 
+  console.log(leaderboard);
+  let j=-1;
+  
+  for(var i=len-1;i>=0;i--)
+  {
+    if(leaderboard[i].userid==userid)
+    {
+      j=i;
+      html+=`
+      <li id="you-1">
+        <mark>You</mark>
+        <small>${points}</small>
+      </li>`
+    }
+    else{
+      html+=`
+      <li>
+        <mark>${leaderboard[i].username}</mark>
+        <small>${leaderboard[i].point}</small>
+      </li>`
+    }
+  }
+  console.log(j);
+  // document.styleSheets[2].insertRule('.you::before',`content:'${j+1}'`, 0);
+  html+=`
+  <li id="you-2">
+      <mark>${leaderboard[j].username}/ Rank(${len-j})</mark>
+      <small>${points}</small>
+    </li>`
+    html+=`</ol>`
+  div.innerHTML=html;
+  console.log(leaderboard);
+}
   function displayActivity(ac, x) {
     // console.log(ac);
     let localhtml = ``;
@@ -119,7 +169,7 @@ let selectedAc=new Array;
     <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
     <a target="_blank" href="/docter/getVideo/${element._id}"<i class="fas fa-play"></i></a>
   </button>
-  <p style="margin-top:5px">Points:20<p/>
+  <p style="margin-top:5px">Points:${element.activity.point}<p/>
     </div>
     </div>
     <div class="project-box-footer">
